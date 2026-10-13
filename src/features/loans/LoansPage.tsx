@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Book, Category, Loan } from '../../shared/types';
 import { UserSelector } from '../users/components/UserSelector';
-import { getSession, setSession } from '../users/session';
+import { getSession } from '../users/session';
+import { useSession } from '../users/useSession';
 import { BookSearch } from './components/BookSearch';
 import { LoanList } from './components/LoanList';
 import {
   listBooks,
   listCategories,
   listLoans,
-  seedSampleData,
 } from './loansService';
 
 export function LoansPage() {
+  const session = useSession();
+  const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'catalog' | 'loans'>('catalog');
   const [selectedUserId, setSelectedUserId] = useState<string | null>(() => getSession().userId);
   const [books, setBooks] = useState<Book[]>([]);
@@ -21,22 +23,21 @@ export function LoansPage() {
   const [recentLoan, setRecentLoan] = useState<Loan | null>(null);
 
   const reloadData = () => {
+    try {
     setBooks(listBooks());
     setCategories(listCategories());
-    setLoans(listLoans());
+    setLoans(session.role === 'ADMIN' ? listLoans() : session.userId ? listLoans(session.userId) : []);
+    setError('');
+    } catch { setError('No se pudieron cargar los datos de la biblioteca.'); }
   };
 
   useEffect(() => {
     reloadData();
   }, []);
 
-  const handleUserChange = (newUserId: string) => {
+  const handleUserChange = (newUserId: string | null) => {
     const val = newUserId || null;
     setSelectedUserId(val);
-    setSession({
-      role: 'USUARIO',
-      userId: val,
-    });
   };
 
   const handleLoanCreated = (newLoan: Loan) => {
@@ -49,34 +50,24 @@ export function LoansPage() {
     reloadData();
   };
 
-  const handleSeed = () => {
-    seedSampleData();
-    reloadData();
-  };
-
   const activeLoansCount = loans.filter((l) => l.status === 'ACTIVO').length;
 
   return (
     <section className="panel loans-module">
       <div className="module-topbar">
         <div>
-          <span className="badge">Módulo · Chahuayo</span>
           <h1>Catálogo y Solicitud de Préstamos</h1>
           <p>Búsqueda en catálogo, control de stock disponible, solicitud de préstamos y devoluciones.</p>
         </div>
-        {books.length === 0 && (
-          <button type="button" onClick={handleSeed} className="btn btn-secondary">
-            Cargar catálogo inicial
-          </button>
-        )}
       </div>
 
-      <div className="loan-user-bar">
+      {error && <p role="alert" className="alert alert-danger">{error}</p>}
+      {session.role === 'ADMIN' && <div className="loan-user-bar">
         <UserSelector
           value={selectedUserId}
           onChange={handleUserChange}
         />
-      </div>
+      </div>}
 
       {recentLoan && (
         <div className="alert alert-success loan-success-banner">

@@ -4,6 +4,17 @@
   background: #f3f6fa;
   font-synthesis: none;
 }
+.app-session { margin-bottom: 20px; }
+.app-session .session-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); align-items: end; }
+.history-filter { max-width: 300px; }
+.history-code { overflow-wrap: anywhere; }
+.receipt-card { max-width: 800px; margin: auto; }
+.receipt-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 20px; }
+.receipt-details > div { padding: 16px; background: #f3f6fa; border-radius: 8px; min-width: 0; }
+.receipt-details dt { color: #52647a; font-size: .9rem; margin-bottom: 8px; }
+.receipt-details dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.actions-cell { flex-wrap: wrap; }
+.table-wrapper { max-width: 100%; }
 * {
   box-sizing: border-box;
 }
