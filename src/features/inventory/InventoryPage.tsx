@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
-import type { Category } from '../../shared/types';
+import type { Book, Category } from '../../shared/types';
+import { BookForm } from './components/BookForm';
+import { BookTable } from './components/BookTable';
 import { CategoryForm } from './components/CategoryForm';
-import { deleteCategory, listCategories, saveCategory } from './inventoryService';
+import { deleteBook, deleteCategory, listBooks, listCategories, saveBook, saveCategory } from './inventoryService';
 import './inventory.css';
 
 export function InventoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Category | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  function refresh() { setCategories(listCategories()); }
+  function refresh() { setCategories(listCategories()); setBooks(listBooks()); }
   useEffect(() => {
     try { refresh(); } catch { setError('No se pudieron leer los datos guardados.'); }
   }, []);
@@ -37,6 +41,17 @@ export function InventoryPage() {
             }}>Eliminar<span className="sr-only"> {category.name}</span></button>
           </div>
         </li>)}</ul>
+      </div>
+    </div>
+    <hr />
+    <div className="inventory-grid books-grid">
+      <BookForm key={editingBook?.id ?? 'new-book'} book={editingBook} categories={categories} onCancel={() => setEditingBook(null)} onSave={input => act(() => { saveBook(input); setEditingBook(null); }, 'Libro guardado.')} />
+      <div><h2>Libros ({books.length})</h2>
+        <BookTable books={books} categories={categories} onEdit={setEditingBook} onDelete={book => {
+          if (window.confirm(`¿Eliminar el libro «${book.title}»?`)) act(() => {
+            deleteBook(book.id); if (editingBook?.id === book.id) setEditingBook(null);
+          }, 'Libro eliminado.');
+        }} />
       </div>
     </div>
   </section>;
