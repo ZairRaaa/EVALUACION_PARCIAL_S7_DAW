@@ -12,14 +12,15 @@ export function UsersPage() {
   const [loading, setLoading] = useState(false);
 
   const loadUsers = () => {
-    setUsers(listUsers());
+    try { setUsers(listUsers()); }
+    catch { setError('No se pudieron cargar los usuarios guardados.'); }
   };
 
   useEffect(() => {
     loadUsers();
   }, []);
 
-  const handleSubmit = async (data: {
+  const handleSubmit = (data: {
     fullName: string;
     universityCode: string;
     email: string;
@@ -33,8 +34,10 @@ export function UsersPage() {
       const newUser = registerUser(data);
       setSuccess(`Usuario ${newUser.fullName} registrado exitosamente.`);
       loadUsers();
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar usuario.');
+      return false;
     } finally {
       setLoading(false);
     }

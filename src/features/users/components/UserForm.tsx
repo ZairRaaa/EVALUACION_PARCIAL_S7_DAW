@@ -7,7 +7,7 @@ interface UserFormProps {
     universityCode: string;
     email: string;
     type: UserType;
-  }) => void;
+  }) => boolean;
   disabled?: boolean;
 }
 
@@ -19,7 +19,7 @@ export function UserForm({ onSubmit, disabled = false }: UserFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ fullName, universityCode, email, type });
+    if (!onSubmit({ fullName, universityCode, email, type })) return;
     // Limpiar formulario después de enviar
     setFullName('');
     setUniversityCode('');

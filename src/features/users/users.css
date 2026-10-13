@@ -113,16 +113,16 @@
   overflow-x: auto;
 }
 
-table {
+.users-page table {
   width: 100%;
   border-collapse: collapse;
 }
 
-thead {
+.users-page thead {
   background: #f5f5f5;
 }
 
-th {
+.users-page th {
   padding: 0.75rem;
   text-align: left;
   font-weight: 600;
@@ -130,16 +130,16 @@ th {
   border-bottom: 2px solid #ddd;
 }
 
-td {
+.users-page td {
   padding: 0.75rem;
   border-bottom: 1px solid #eee;
 }
 
-tbody tr:hover {
+.users-page tbody tr:hover {
   background: #fafafa;
 }
 
-.badge {
+.users-page .badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.875rem;
@@ -196,11 +196,11 @@ tbody tr:hover {
     padding: 1rem;
   }
 
-  table {
+  .users-page table {
     font-size: 0.875rem;
   }
 
-  th, td {
+  .users-page th, .users-page td {
     padding: 0.5rem;
   }
 }
