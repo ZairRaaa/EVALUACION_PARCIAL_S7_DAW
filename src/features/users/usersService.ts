@@ -1,5 +1,6 @@
 import { readDatabase, updateDatabase } from '../../shared/storage/database';
 import type { LibraryUser } from '../../shared/types';
+export const USERS_CHANGED = 'biblioteca:users-changed';
 
 export function listUsers(): LibraryUser[] {
   const db = readDatabase();
@@ -25,7 +26,7 @@ export function registerUser(input: Omit<LibraryUser, 'id'>): LibraryUser {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
     throw new Error('El formato del correo electrónico no es válido.');
   }
-  if (!input.type) {
+  if (input.type !== 'ESTUDIANTE' && input.type !== 'DOCENTE') {
     throw new Error('El tipo de usuario es obligatorio.');
   }
 
@@ -48,5 +49,6 @@ export function registerUser(input: Omit<LibraryUser, 'id'>): LibraryUser {
     draft.users.push(newUser);
   });
 
+  window.dispatchEvent(new Event(USERS_CHANGED));
   return newUser;
 }

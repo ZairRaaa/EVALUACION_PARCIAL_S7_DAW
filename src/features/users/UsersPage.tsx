@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { registerUser, listUsers } from './usersService';
 import { UserForm } from './components/UserForm';
 import { UserTable } from './components/UserTable';
-import { SessionSelector } from './components/SessionSelector';
 import type { LibraryUser, UserType } from '../../shared/types';
 import './users.css';
 
@@ -13,14 +12,15 @@ export function UsersPage() {
   const [loading, setLoading] = useState(false);
 
   const loadUsers = () => {
-    setUsers(listUsers());
+    try { setUsers(listUsers()); }
+    catch { setError('No se pudieron cargar los usuarios guardados.'); }
   };
 
   useEffect(() => {
     loadUsers();
   }, []);
 
-  const handleSubmit = async (data: {
+  const handleSubmit = (data: {
     fullName: string;
     universityCode: string;
     email: string;
@@ -34,8 +34,10 @@ export function UsersPage() {
       const newUser = registerUser(data);
       setSuccess(`Usuario ${newUser.fullName} registrado exitosamente.`);
       loadUsers();
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar usuario.');
+      return false;
     } finally {
       setLoading(false);
     }
@@ -49,11 +51,6 @@ export function UsersPage() {
       </header>
 
       <div className="page-content">
-        <section className="card">
-          <h2>Configuración de sesión</h2>
-          <SessionSelector />
-        </section>
-
         <section className="card">
           <h2>Registrar nuevo usuario</h2>
           {error && <div className="alert alert-error">{error}</div>}
