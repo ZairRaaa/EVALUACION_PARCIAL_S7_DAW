@@ -10,6 +10,8 @@ nav a { padding: 12px 16px; border-radius: 8px; text-decoration: none; color: #1
 nav a.active { background: #174a74; color: white; }
 a:focus-visible { outline: 3px solid #bd6418; outline-offset: 3px; }
 .panel { padding: 28px; background: white; border: 1px solid #dce4ed; border-radius: 12px; }
+.app-session { margin-bottom: 20px; }
+.app-session .session-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); align-items: end; }
 .badge { font-size: .85rem; color: #744d13; background: #fff3d8; padding: 6px 10px; border-radius: 6px; display: inline-block; }
 h1 { font-size: clamp(1.4rem, 4vw, 2rem); overflow-wrap: anywhere; }
 li { margin: 12px 0; line-height: 1.5; }

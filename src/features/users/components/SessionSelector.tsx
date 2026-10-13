@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { getSession, setSession, type Session } from '../session';
+import { useState } from 'react';
+import { setSession, type Session } from '../session';
+import { useSession } from '../useSession';
 import { UserSelector } from './UserSelector';
 
 interface SessionSelectorProps {
@@ -7,16 +8,19 @@ interface SessionSelectorProps {
 }
 
 export function SessionSelector({ onChange }: SessionSelectorProps) {
-  const [session, setSessionState] = useState<Session>(getSession());
+  const session = useSession();
+  const [error, setError] = useState('');
+  const save = (value: Session) => {
+    try { setSession(value); setError(''); onChange?.(); }
+    catch { setError('No se pudo guardar la sesión. Revisa el almacenamiento del navegador.'); }
+  };
 
   const handleRoleChange = (role: 'ADMIN' | 'USUARIO') => {
     const newSession: Session = {
       role,
       userId: role === 'ADMIN' ? null : session.userId,
     };
-    setSession(newSession);
-    setSessionState(newSession);
-    onChange?.();
+    save(newSession);
   };
 
   const handleUserChange = (userId: string | null) => {
@@ -24,16 +28,15 @@ export function SessionSelector({ onChange }: SessionSelectorProps) {
       ...session,
       userId,
     };
-    setSession(newSession);
-    setSessionState(newSession);
-    onChange?.();
+    save(newSession);
   };
 
   return (
     <div className="session-selector">
       <div className="form-group">
-        <label>Modo de uso</label>
+        <label htmlFor="session-role">Modo de uso</label>
         <select
+          id="session-role"
           value={session.role}
           onChange={(e) => handleRoleChange(e.target.value as 'ADMIN' | 'USUARIO')}
         >
@@ -57,6 +60,8 @@ export function SessionSelector({ onChange }: SessionSelectorProps) {
           <span> (Usuario seleccionado)</span>
         )}
       </div>
+      {error && <p role="alert">{error}</p>}
+      {session.role === 'USUARIO' && !session.userId && <p role="status">Selecciona un usuario registrado para consultar sus préstamos.</p>}
     </div>
   );
 }

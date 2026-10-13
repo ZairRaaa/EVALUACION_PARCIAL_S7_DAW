@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { registerUser, listUsers } from './usersService';
 import { UserForm } from './components/UserForm';
 import { UserTable } from './components/UserTable';
-import { SessionSelector } from './components/SessionSelector';
 import type { LibraryUser, UserType } from '../../shared/types';
 import './users.css';
 
@@ -49,11 +48,6 @@ export function UsersPage() {
       </header>
 
       <div className="page-content">
-        <section className="card">
-          <h2>Configuración de sesión</h2>
-          <SessionSelector />
-        </section>
-
         <section className="card">
           <h2>Registrar nuevo usuario</h2>
           {error && <div className="alert alert-error">{error}</div>}
