@@ -19,12 +19,14 @@ export interface LibraryUser {
 }
 export interface Loan {
   id: string;
-  code: string;
+  loanCode: string; // ej: "PRE-uuid"
+  code?: string;
   userId: string;
   bookId: string;
-  borrowedAt: string;
-  dueAt: string;
-  returnedAt: string | null;
+  loanDate: string; // ISO string
+  borrowedAt?: string;
+  dueAt: string; // ISO string
+  returnedAt: string | null; // ISO string
   status: LoanStatus;
   receipt: {
     userName: string;
